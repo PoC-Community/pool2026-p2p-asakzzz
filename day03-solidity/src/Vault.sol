@@ -4,17 +4,17 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Vault is IERC20 {
+contract Vault {
     string private _baseTokenURI;
     uint256 private _tokenIdCounter;
 
     uint256 totalShares;
     mapping(address => uint256) sharesOf;
-    IERC20 immutable asset;
+    IERC20 immutable public asset;
     // need to correct that
 
-    constructor(address _token) {
-        asset = IERC20(_token);
+    constructor(address _asset) {
+        asset = IERC20(_asset);
     }
 
     function _convertToShares(uint256 assets) internal view returns (uint256) {
