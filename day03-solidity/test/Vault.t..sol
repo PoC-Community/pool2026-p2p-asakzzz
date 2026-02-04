@@ -26,7 +26,8 @@ contract VaultTest is Test {
 
 contract VaultHelper is Vault {
 
-    constructor(address _token) Vault(_token) {}
+    constructor(address _token) Vault(_token) {
+    }
 
     function _convertToSharesExt(uint256 assets) public view returns (uint256) {
     return _convertToShares(assets);  

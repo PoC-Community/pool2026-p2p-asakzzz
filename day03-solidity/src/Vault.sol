@@ -3,17 +3,19 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-contract Vault {
+contract Vault is Ownable, ReentrancyGuard {
     string private _baseTokenURI;
     uint256 private _tokenIdCounter;
-
     uint256 totalShares;
-    mapping(address => uint256) sharesOf;
-    IERC20 immutable public asset;
-    // need to correct that
+    using SafeERC20 for IERC20;
 
-    constructor(address _asset) {
+    mapping(address => uint256) sharesOf;
+    IERC20 public immutable asset;
+
+    constructor(address _asset) Ownable(msg.sender) {
         asset = IERC20(_asset);
     }
 
@@ -37,5 +39,22 @@ contract Vault {
             uint256 assets = (shares * totalAssets) / totalShares;
             return assets;
         }
+    }
+
+    function deposit(uint256 assets) external nonReentrant returns (uint256 shares) {
+        if (assets > 0) {
+            shares = _convertToShares(assets);
+        } else {
+            return 0;
+        }
+
+        if (shares > 0) {
+            sharesOf[msg.sender] += shares;
+            totalShares += shares;
+        } else {
+            return 0;
+        }
+
+        safeTransferFrom( address msg.sender, address asset, uint IERC20)
     }
 }
