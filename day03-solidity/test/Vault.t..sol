@@ -11,12 +11,13 @@ contract VaultTest is Test {
     VaultHelper vault;
     PoolToken token;
 
-    // address alice = makeAddr("alice");
+    address alice = makeAddr("alice");
     uint256 constant INITIAL_SUPPLY = 1000 ether;
 
     function setUp() public {
         token = new PoolToken(INITIAL_SUPPLY);
         vault = new VaultHelper(address(token));
+        token.mint(alice, 500 ether);
     }
 
     function test_Deployment() public view {
@@ -27,6 +28,21 @@ contract VaultTest is Test {
         uint256 amount = 100;
         uint256 shares  = vault._convertToSharesExt(amount);
         assertEq(shares, amount);
+    }
+
+    function test_DepositFlow() public {
+        uint256 depositAmount = 100 ether;
+        
+        vm.startPrank(alice);
+        
+        token.approve(address(vault), depositAmount);
+        
+        uint256 shares = vault.deposit(depositAmount);
+        
+        assertEq(shares, depositAmount);
+        assertEq(token.balanceOf(address(vault)), depositAmount);
+        
+        vm.stopPrank();
     }
 }
 
