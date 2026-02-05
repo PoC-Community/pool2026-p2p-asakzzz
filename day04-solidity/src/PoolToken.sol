@@ -20,13 +20,12 @@ contract PoolToken is ERC20Permit, ERC20Votes, Ownable {
 
     function _update(address from, address to, uint256 value) internal override(ERC20, ERC20Votes) {
         
-        super._update(from, to, value)
+        super._update(from, to, value);
     }
 
     function nonces(address owner) public view override(ERC20Permit, Nonces) returns (uint256) {
-        super.nonces(owner)
+        super.nonces(owner);
     }
 
-    override(Contract1, Contract2);
-
+    
 }

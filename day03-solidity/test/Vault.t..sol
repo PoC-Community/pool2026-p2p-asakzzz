@@ -12,6 +12,7 @@ contract VaultTest is Test {
     PoolToken token;
 
     address alice = makeAddr("alice");
+    address thomas = makeAddr("thomas");
     uint256 constant INITIAL_SUPPLY = 1000 ether;
 
     function setUp() public {
