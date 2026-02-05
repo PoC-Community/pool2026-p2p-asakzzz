@@ -7,8 +7,8 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 contract Vault is Ownable, ReentrancyGuard {
-    string private _baseTokenURI;
-    uint256 private _tokenIdCounter;
+    // string private _baseTokenURI;
+    // uint256 private _tokenIdCounter;
     uint256 totalShares;
     using SafeERC20 for IERC20;
 
@@ -41,7 +41,9 @@ contract Vault is Ownable, ReentrancyGuard {
         }
     }
 
-    function deposit(uint256 assets) external nonReentrant returns (uint256 shares) {
+    function deposit(
+        uint256 assets
+    ) external nonReentrant returns (uint256 shares) {
         if (assets > 0) {
             shares = _convertToShares(assets);
         } else {
@@ -55,6 +57,25 @@ contract Vault is Ownable, ReentrancyGuard {
             return 0;
         }
 
-        safeTransferFrom( address msg.sender, address asset, uint IERC20)
+        asset.safeTransferFrom(msg.sender, address(this), assets);
+    }
+
+    function withdraw(uint256 shares) public nonReentrant returns (uint256 assets) {
+        if (assets > 0) {
+            shares = _convertToAssets(shares);
+        } else {
+            return 0;
+        }
+
+        if (shares > 0) {
+            sharesOf[msg.sender] -= shares;
+            totalShares -= shares;
+        } else {
+            return 0;
+        }
+
+        asset.safeTransfer(msg.sender, assets);
+
+        return assets;
     }
 }
